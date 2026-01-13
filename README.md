@@ -24,7 +24,7 @@ You can modify and create the scene as you wish in `scene.py`
 Import the scene and load it in the main function in `main.py`. You can load multiple scenes to play after each other in the specified order.
 ```python
 from playground.engine.loop import load_scene, run_engine
-from playground.scenes.test.scene import TestScene
+from playground.scenes.test import TestScene
 
 if __name__ == "__main__":
     load_scene(TestScene)

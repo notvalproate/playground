@@ -1,6 +1,11 @@
 import sys
 from pathlib import Path
 
+INIT_TEMPLATE = """from .scene import {class_name}
+
+__all__ = ["{class_name}"]
+"""
+
 TEMPLATE = """import pygame
 from typing import override
 
@@ -48,6 +53,7 @@ def main() -> None:
     base_path = Path("playground/scenes") / scene_name
     assets_path = base_path / "assets"
     scene_file = base_path / "scene.py"
+    init_file = base_path / "__init__.py"
 
     if base_path.exists():
         print(f"Scene '{scene_name}' already exists.")
@@ -55,6 +61,7 @@ def main() -> None:
 
     assets_path.mkdir(parents=True)
     scene_file.write_text(TEMPLATE.format(class_name=class_name))
+    init_file.write_text(INIT_TEMPLATE.format(class_name=class_name))
 
     print(f"✔ Scene '{scene_name}' created successfully")
 

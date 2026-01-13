@@ -2,8 +2,7 @@ import pygame
 import math
 from typing import override
 
-from playground.engine.scene import Scene
-from playground.engine.window import Window
+from playground.engine import Scene, Window
 
 import random
 
