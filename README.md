@@ -1,6 +1,6 @@
 # Playground
 Just a simple playground to quickly render something and try out something you want to simulate.
-> WIP: Still need to integrate a physics engine
+> WIP: Still need to integrate a physics engine and asset loading
 
 # Setup
 - Make sure you have Python installed, then just run:
