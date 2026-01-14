@@ -1,8 +1,9 @@
 import pygame
+import pymunk
 import math
 from typing import override
 
-from playground.engine import Scene, Window
+from playground.engine import Scene, Window, PhysicsObject
 
 import random
 
@@ -14,8 +15,11 @@ class BrownianScene(Scene):
     max_y: float
     line_surface: pygame.Surface
 
+    ball: PhysicsObject
+
     def __init__(self, window: Window):
-        super().__init__(window)
+        do_physics = True
+        super().__init__(window, do_physics)
 
         self.position = pygame.Vector2(0, 0)
         self.prev_position = pygame.Vector2(0, 0)
@@ -24,9 +28,19 @@ class BrownianScene(Scene):
         self.max_y = 0
         self.line_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
 
+        self.ball = PhysicsObject()
+
     @override
     def start(self) -> None:
         self.window.set_caption("Brownian Motion Sim")
+
+        self.ball.body = pymunk.Body()
+        self.ball.body.position = 0, 0
+        
+        self.ball.poly = pymunk.Circle(self.ball.body, 0.5)
+        self.ball.poly.mass = 10
+
+        self.physics.add_object(self.ball)
 
     @override
     def update(self) -> None: 
@@ -62,6 +76,9 @@ class BrownianScene(Scene):
         self.renderer.clear()
         self.renderer.draw_circle_fill(self.position, 1.0)
         self.renderer.blit_surface_world(self.line_surface)
+
+        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position[0], self.ball.body.position[1]), 0.5, (0, 0, 255))
+
         self.renderer.swap_display_buffers()
 
     @override

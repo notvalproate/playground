@@ -18,7 +18,8 @@ class {class_name}(Scene):
     delta: float
 
     def __init__(self, window: Window):
-        super().__init__(window)
+        do_physics = False
+        super().__init__(window, do_physics)
 
         self.position = pygame.Vector2(0, 0)
         self.delta = 0.05
