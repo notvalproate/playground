@@ -34,6 +34,8 @@ class BrownianScene(Scene):
     def start(self) -> None:
         self.window.set_caption("Brownian Motion Sim")
 
+        self.physics.set_gravity((0, 0))
+
         self.ball.body = pymunk.Body()
         self.ball.body.position = 0, 0
         
@@ -44,24 +46,27 @@ class BrownianScene(Scene):
 
     @override
     def update(self) -> None: 
-        self.prev_position.x = self.position.x
-        self.prev_position.y = self.position.y
+        self.apply_drag(self.ball.body)
 
-        random_dir = random.random() * 2 * math.pi
-        random_amt = random.random()
-        self.position.x += math.sin(random_dir) * self.delta * random_amt
-        self.position.y += math.cos(random_dir) * self.delta * random_amt
+        if self.pressed_keys[pygame.K_w]:
+            self.ball.body.apply_force_at_local_point((0, 500))
+        if self.pressed_keys[pygame.K_s]:
+            self.ball.body.apply_force_at_local_point((0, -500))
+        if self.pressed_keys[pygame.K_d]:
+            self.ball.body.apply_force_at_local_point((500, 0))
+        if self.pressed_keys[pygame.K_a]:
+            self.ball.body.apply_force_at_local_point((-500, 0))    
 
-        if abs(self.position.x) > self.max_x:
-            self.max_x = abs(self.position.x)
-
-        if abs(self.position.y) > self.max_y:
-            self.max_y = abs(self.position.y)
-
-        for event in self.events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    self.window.toggle_fullscreen()
+    def apply_drag(self, body):
+        v_len = body.velocity.length
+        if v_len == 0:
+            return
+        
+        drag_coefficient = 10
+        drag_force_magnitude = drag_coefficient * v_len**2
+        
+        drag_force = -body.velocity.normalized() * drag_force_magnitude
+        body.apply_force_at_local_point(drag_force, (0, 0))
 
     @override
     def draw(self) -> None:
@@ -74,10 +79,8 @@ class BrownianScene(Scene):
 
         self.renderer.clear_color = (0, 0, 0)
         self.renderer.clear()
-        self.renderer.draw_circle_fill(self.position, 1.0)
-        self.renderer.blit_surface_world(self.line_surface)
-
         self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position[0], self.ball.body.position[1]), 0.5, (0, 0, 255))
+        self.renderer.blit_surface_world(self.line_surface)
 
         self.renderer.swap_display_buffers()
 

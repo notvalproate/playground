@@ -12,6 +12,7 @@ class Scene:
     renderer: Renderer
     framerate: int
     events: List[pygame.event.Event]
+    pressed_keys: List[int]
     physics: Physics
     frametime: int
 
@@ -21,6 +22,7 @@ class Scene:
         self.renderer = Renderer(window.surface, self.main_camera)
         self.framerate = 60
         self.events = []
+        self.pressed_keys = []
 
         self.physics = Physics() if do_physics else None
 

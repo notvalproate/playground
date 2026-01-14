@@ -1,5 +1,5 @@
 import pymunk
-from typing import List
+from typing import List, Tuple
 
 
 class PhysicsObject:
@@ -19,6 +19,9 @@ class Physics:
         self.space = pymunk.Space()
         self.space.gravity = 0, -9.81
         self.bodies = []
+
+    def set_gravity(self, gravity: Tuple[float, float]) -> None:
+        self.space.gravity = gravity
 
     def add_object(self, object: PhysicsObject) -> None:
         self.space.add(object.body, object.poly)

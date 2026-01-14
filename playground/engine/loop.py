@@ -36,6 +36,7 @@ def run_scene(scene: Scene) -> None:
 
         events = pygame.event.get()
         scene.events = events
+        scene.pressed_keys = pygame.key.get_pressed()
 
         scene.update()
 
