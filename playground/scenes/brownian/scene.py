@@ -1,11 +1,8 @@
 import pygame
 import pymunk
-import math
 from typing import override
 
 from playground.engine import Scene, Window, PhysicsObject
-
-import random
 
 class BrownianScene(Scene):
     position: pygame.Vector2
@@ -26,7 +23,7 @@ class BrownianScene(Scene):
         self.delta = 0.05
         self.max_x = 0
         self.max_y = 0
-        self.line_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+        self.line_surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
 
         self.ball = PhysicsObject()
 
@@ -55,9 +52,14 @@ class BrownianScene(Scene):
         if self.pressed_keys[pygame.K_d]:
             self.ball.body.apply_force_at_local_point((500, 0))
         if self.pressed_keys[pygame.K_a]:
-            self.ball.body.apply_force_at_local_point((-500, 0))    
+            self.ball.body.apply_force_at_local_point((-500, 0))   
 
-    def apply_drag(self, body):
+        self.prev_position.x = self.position.x
+        self.prev_position.y = self.position.y
+        self.position.x = self.ball.body.position.x
+        self.position.y = self.ball.body.position.y
+
+    def apply_drag(self, body) -> None:
         v_len = body.velocity.length
         if v_len == 0:
             return
@@ -79,7 +81,7 @@ class BrownianScene(Scene):
 
         self.renderer.clear_color = (0, 0, 0)
         self.renderer.clear()
-        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position[0], self.ball.body.position[1]), 0.5, (0, 0, 255))
+        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), 0.5, (0, 0, 255))
         self.renderer.blit_surface_world(self.line_surface)
 
         self.renderer.swap_display_buffers()
