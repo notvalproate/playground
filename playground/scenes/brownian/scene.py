@@ -1,6 +1,8 @@
 import pygame
 import pymunk
 from typing import override, List, Tuple
+import random
+import math
 
 from playground.engine import Scene, Window, PhysicsObject
 
@@ -41,17 +43,18 @@ class BrownianScene(Scene):
 
         self.ball = None
         self.walls = []
+        self.atoms = []
 
     @override
     def start(self) -> None:
         self.window.set_caption("Brownian Motion Sim")
 
-        self.physics.debug_draw = True
+        # self.physics.debug_draw = True
         self.physics.set_gravity((0, 0))
 
         # Creating Ball
 
-        self.ball = self.create_ball((0, 0), 0.5, 10)
+        self.ball = self.create_ball((0, 0), 0.3, 5)
         self.physics.add_object(self.ball)
 
         # Creating Walls
@@ -78,6 +81,28 @@ class BrownianScene(Scene):
 
         for wall in self.walls:
             self.physics.add_object(wall.obj)
+
+        
+        # Create Atoms
+
+        for i in range(47):
+            for j in range(27):
+                posx = top_left.x + wall_thickness + 0.1 + (i / 5)
+                posy = top_left.y - wall_thickness - 0.1 - (j / 5)
+
+                if math.dist((0, 0), (posx, posy)) <= 0.6:
+                    continue
+
+                atom = self.create_ball((posx, posy), 0.05, 1)
+
+                angle = random.random() * math.pi * 2
+                vx = math.cos(angle)
+                vy = math.sin(angle)
+                atom.body.velocity = (vx, vy)
+
+                self.atoms.append(atom)
+                self.physics.add_object(atom)
+
 
     def create_ball(self, pos: Tuple[float, float], r: float, m: float) -> PhysicsObject:
         ball = PhysicsObject()
@@ -143,14 +168,14 @@ class BrownianScene(Scene):
         prev_surface = self.renderer.get_active_surface()
         self.renderer.set_active_surface(self.line_surface)
 
-        self.renderer.draw_line_world(self.prev_position, self.position, 0.01, (0, 255, 0))
+        self.renderer.draw_line_world(self.prev_position, self.position, 0.01, (255, 0, 0))
 
         self.renderer.set_active_surface(prev_surface)
 
         self.renderer.clear_color = (0, 0, 0)
         self.renderer.clear()
 
-        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), 0.5, (0, 0, 255))
+        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), 0.3, (0, 0, 255))
 
         for wall in self.walls:
             self.renderer.draw_rect_fill((wall.center.x, wall.center.y, wall.width, wall.height), 0, (204, 203, 122))
