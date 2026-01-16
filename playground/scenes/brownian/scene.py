@@ -31,6 +31,7 @@ class BrownianScene(Scene):
     def start(self) -> None:
         self.window.set_caption("Brownian Motion Sim")
 
+        self.physics.debug_draw = True
         self.physics.set_gravity((0, 0))
 
         self.ball.body = pymunk.Body()
@@ -83,8 +84,6 @@ class BrownianScene(Scene):
         self.renderer.clear()
         self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), 0.5, (0, 0, 255))
         self.renderer.blit_surface_world(self.line_surface)
-
-        self.renderer.swap_display_buffers()
 
     @override
     def quit(self) -> None:

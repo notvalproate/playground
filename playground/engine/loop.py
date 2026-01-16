@@ -47,6 +47,8 @@ def run_scene(scene: Scene) -> None:
 
         scene.draw()
 
+        post_draw(scene)
+
         for event in events:
             if event.type == pygame.QUIT:
                 scene.quit()
@@ -55,6 +57,13 @@ def run_scene(scene: Scene) -> None:
         events.clear()
         scene.events.clear()
         clock.tick(scene.framerate)
+
+def post_draw(scene: Scene) -> None:
+    if scene.physics.debug_draw:
+        for obj in scene.physics.objects:
+            scene.renderer.draw_physics_object(obj)
+
+    scene.renderer.swap_display_buffers()
 
 def get_frametime() -> int:
     global frame_clock

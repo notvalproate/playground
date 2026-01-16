@@ -1,9 +1,11 @@
 import pygame
+import pymunk
 import math
 from pathlib import Path
 from typing import Tuple, Any, overload
 from abc import ABC, abstractmethod
 from playground.engine.camera import Camera
+from playground.engine.physics import PhysicsObject
 
 DEFAULT_RENDER_COLOR = (200, 0, 0)
 DEFAULT_LINE_WIDTH = 1
@@ -192,7 +194,8 @@ class Renderer:
         end_pos = self.__active_camera.world_to_screen(end_pos, self.__viewport)
         width_scaled = self.__active_camera.scale(width)
 
-        pygame.draw.line(self.__active_surface, color, (start_pos.x, start_pos.y), (end_pos.x, end_pos.y), int(round(width_scaled)))
+        if width_scaled >= 1:
+            pygame.draw.line(self.__active_surface, color, (start_pos.x, start_pos.y), (end_pos.x, end_pos.y), int(round(width_scaled)))
 
     def draw_circle_fill(
         self,
@@ -223,8 +226,9 @@ class Renderer:
         circle_center = self.__active_camera.world_to_screen(center, self.__viewport)
         radius_scaled = self.__active_camera.scale(radius)
         width_scaled = self.__active_camera.scale(width)
-
-        pygame.draw.circle(self.__active_surface, color, (circle_center.x, circle_center.y), radius_scaled, int(round(width_scaled)), draw_top_right, draw_top_left, draw_bottom_left, draw_bottom_right)
+        
+        if width_scaled >= 1:
+            pygame.draw.circle(self.__active_surface, color, (circle_center.x, circle_center.y), radius_scaled, int(round(width_scaled)), draw_top_right, draw_top_left, draw_bottom_left, draw_bottom_right)
 
     def draw_rect_fill(
         self, 
@@ -254,4 +258,21 @@ class Renderer:
         border_scaled = self.__active_camera.scale(border_radius)
         width_scaled = self.__active_camera.scale(width)
 
-        pygame.draw.rect(self.__active_surface, color, (rect_coords.x, rect_coords.y, rect_dimensions.x, rect_dimensions.y), int(round(width_scaled)), int(round(border_scaled)))
+        
+        if width_scaled >= 1:
+            pygame.draw.rect(self.__active_surface, color, (rect_coords.x, rect_coords.y, rect_dimensions.x, rect_dimensions.y), int(round(width_scaled)), int(round(border_scaled)))
+
+    def draw_physics_object(self, object: PhysicsObject) -> None:
+        width_scaled = 1 / self.__active_camera.zoom
+        position = pygame.Vector2(object.body.position.x, object.body.position.y)
+        color = (0, 255, 0)
+
+        if isinstance(object.poly, pymunk.Circle):
+            radius = object.poly.radius
+            line_end = pygame.Vector2(
+                position.x + (radius * math.cos(object.body.angle)),
+                position.y + (radius * math.sin(object.body.angle))
+            )
+
+            self.draw_circle_outline(position, radius, width_scaled, color)
+            self.draw_line_world(position, line_end, width_scaled, color)
