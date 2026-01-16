@@ -27,6 +27,7 @@ class BrownianScene(Scene):
     line_surface: pygame.Surface
 
     ball: PhysicsObject
+    ball_r: float
     walls: List[Wall]
     atoms: List[PhysicsObject]
 
@@ -42,6 +43,7 @@ class BrownianScene(Scene):
         self.line_surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
 
         self.ball = None
+        self.ball_r = 0.5
         self.walls = []
         self.atoms = []
 
@@ -49,12 +51,12 @@ class BrownianScene(Scene):
     def start(self) -> None:
         self.window.set_caption("Brownian Motion Sim")
 
-        # self.physics.debug_draw = True
+        self.physics.debug_draw = True
         self.physics.set_gravity((0, 0))
 
         # Creating Ball
 
-        self.ball = self.create_ball((0, 0), 0.3, 5)
+        self.ball = self.create_ball((0, 0), self.ball_r, 5)
         self.physics.add_object(self.ball)
 
         # Creating Walls
@@ -175,7 +177,7 @@ class BrownianScene(Scene):
         self.renderer.clear_color = (0, 0, 0)
         self.renderer.clear()
 
-        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), 0.3, (0, 0, 255))
+        self.renderer.draw_circle_fill(pygame.Vector2(self.ball.body.position.x, self.ball.body.position.y), self.ball_r, (0, 0, 255))
 
         for wall in self.walls:
             self.renderer.draw_rect_fill((wall.center.x, wall.center.y, wall.width, wall.height), 0, (204, 203, 122))
