@@ -244,7 +244,7 @@ class Renderer:
         pygame.draw.rect(rect_surface, color, (0, 0, rect_size.x, rect_size.y), 0, int(round(border_scaled)))
         rect_surface = pygame.transform.rotate(rect_surface, rotation * 180 / math.pi)
 
-        self.blit_surface_world(rect_surface, pygame.Vector2(0, 0))
+        self.blit_surface_world(rect_surface, pygame.Vector2(rect[0], rect[1]))
 
     def draw_rect_outline(
         self, 
