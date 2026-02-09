@@ -39,7 +39,6 @@ class {class_name}(Scene):
             "Welcome to the Playground",
             pygame.Vector2(0.0, 2.5),
         )
-        self.renderer.swap_display_buffers()
 """
 
 

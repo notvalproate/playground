@@ -59,7 +59,7 @@ def run_scene(scene: Scene) -> None:
         clock.tick(scene.framerate)
 
 def post_draw(scene: Scene) -> None:
-    if scene.physics.debug_draw:
+    if (scene.physics is not None) and scene.physics.debug_draw:
         for obj in scene.physics.objects:
             scene.renderer.draw_physics_object(obj)
 
