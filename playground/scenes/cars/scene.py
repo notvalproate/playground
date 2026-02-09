@@ -3,11 +3,12 @@ from typing import override
 
 from playground.engine.scene import Scene
 from playground.engine.window import Window
-
+from playground.engine.rendering import Sprite
 
 class CarsScene(Scene):
     position: pygame.Vector2
     delta: float
+    sf25: Sprite
 
     def __init__(self, window: Window):
         do_physics = False
@@ -15,6 +16,7 @@ class CarsScene(Scene):
 
         self.position = pygame.Vector2(0, 0)
         self.delta = 0.05
+        self.sf25 = self.assets.load_asset("sf25", "sf25.png")  
 
     @override
     def update(self) -> None:
@@ -31,4 +33,5 @@ class CarsScene(Scene):
             "Welcome to the Playground",
             pygame.Vector2(0.0, 2.5),
         )
+        self.renderer.draw_sprite(self.sf25)
         self.renderer.swap_display_buffers()
